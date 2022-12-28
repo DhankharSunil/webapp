@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+				        http://www.springframework.org/schema/beans/spring-beans.xsd
+				        http://www.springframework.org/schema/mvc
+				        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+				        http://www.springframework.org/schema/context
+				        http://www.springframework.org/schema/context/spring-context.xsd">
+	<context:component-scan	base-package="org.springframework.samples.petclinic.web" />
+	<context:component-scan	base-package="com.web.controller" />
+	<context:component-scan	base-package="com.webapp.service" />
+	<mvc:annotation-driven enable-matrix-variables="true" />
+	<bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+			<property name="cacheSeconds" value="0" />
+			<property name="useExpiresHeader" value="true" />
+			<property name="useCacheControlHeader" value="true" />
+			<property name="useCacheControlNoStore" value="true" />
+			<property name="supportedMethods" value="GET,POST,PUT" />
+	</bean>
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" >
+		<property name="useDefaultSuffixPattern" value="false" />
+	</bean> 
+	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	 <bean
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource"	name="ds">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521/xe" />
+		<property name="username" value="webapp" />
+		<property name="password" value="webroot" />
+	</bean>
+	<bean class="org.springframework.jdbc.core.JdbcTemplate" name="jt">
+		<property name="dataSource" ref="ds"/>
+	</bean>
+	<bean id="simpleJdbcCall" class="org.springframework.jdbc.core.simple.SimpleJdbcCall">
+		<constructor-arg name="dataSource" ref="ds"></constructor-arg>
+	</bean>
+	<bean class="com.webapp.service.LoginRegisterService" name="loginRegisterService">
+		<property name="jdbcTemplate" ref="jt"/>
+	</bean>
+	
+</beans>
