@@ -33,6 +33,7 @@ public class LoginRegister {
 	
 	@RequestMapping(value = "/logout", method = {RequestMethod.POST,RequestMethod.GET})
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("you are Logout");
 		HttpSession session = request.getSession();
 		session.removeAttribute("username");
 		System.out.println(session.getAttribute("username"));
