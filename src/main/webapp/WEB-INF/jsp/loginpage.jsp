@@ -136,7 +136,6 @@ window.history.foward(-1)
 </script>
 </head>
 <body onload="javascript:back_block();">
-<h2>Login Form</h2>
 <form class="modal-content animate" action="<%=request.getContextPath()%>/userlogin" method="Post">
 <div class="row">
 		<div class="col-md-2">
@@ -159,19 +158,25 @@ window.history.foward(-1)
 		%>
     <div class="imgcontainer">
  		<div class="container">
+ 			<h1 style="color: #247998; text-align: center; font-family: proxima-nova; margin-left: -10px;
+			    margin-right: auto; margin-bottom: 40px; margin-top: -30px;">Login</h1>
 		      <label for="uname"><b>E-mail</b></label>
 		      <input type="text" placeholder="Enter E-mail" name="uname" required>
 		      <label for="psw"><b>Password</b></label>
 		      <input type="password" placeholder="Enter Password" name="psw" required>
 		      <button type="submit" onClick="valLoginTest()">Login</button>
+		      <span class="group-btn"> <a href="<%=request.getContextPath()%>/registerpage" 
+			style="color: #1b7e9f;"><i class="fa fa-key" aria-hidden="true"> </i>
+			<button type="button"
+			style="color: white; background: #04AA6D; padding: 12px;margin:0px,10px; border-color: #04AA6D; text-transform: none; "
+				value="Register">Register</button></a>
+		</span>
+		<a href="<%=request.getContextPath()%>/registerpage" style="color: #1b7e9f;margin: 10px" tabindex="7">
+		<i class="fa fa-key" aria-hidden="true"> </i> Forgot Password</a>
     	</div>
     </div>
     </div>
    </div>
  </form>
-    
-	<form class="modal-content animate" action="<%=request.getContextPath()%>/registerpage" method="Post">
-	<button type="submit">Register</button>
-	</form>
 </body>
 </html>

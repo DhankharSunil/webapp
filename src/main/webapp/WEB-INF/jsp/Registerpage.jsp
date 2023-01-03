@@ -167,7 +167,6 @@ span.psw {
 </script>
 </head>
 <body>
-<h2>Register Form</h2>
 <div class="row">
 		<div class="col-md-12">
 			<%
@@ -190,6 +189,8 @@ span.psw {
 		%>
 <form class="modal-content animate" name="form1"  action="<%=request.getContextPath()%>/registeruser" method="Post">
     <div class="container">
+    <h1 style="color: #247998; text-align: center; font-family: proxima-nova; margin-left: -10px;
+			    margin-right: auto; margin-bottom: 40px; margin-top: 10px;">Register</h1>
     	<label for="fname"><b>First Name</b></label>
       <input type="text" placeholder="Enter First Name" name="fname" required>
       <label for="lname"><b>Last Name</b></label>
@@ -199,11 +200,17 @@ span.psw {
          <label><b>Password</b><input name="password" placeholder="Enter Password" type="password" onChange="onCheck()" required/> </label><br />
   		<label><b>Confirm Password</b><input name="confirm" placeholder="Confirm Password"  type="password" onChange="onCheck()" required/> </label><br />
       <button type="submit" onchange="validateEmail(document.form1.email)">Register</button>
+      
+      <span class="group-btn"> <a href="<%=request.getContextPath()%>/login" 
+			style="color: #1b7e9f;margin: 10px" tabindex="7"><i class="fa fa-key" aria-hidden="true"> </i>
+			<button type="button"  tabindex="6"
+			style="color: white; background: #04AA6D; padding: 12px;margin:0px,10px; border-color: #04AA6D; text-transform: none; "
+				value="Login">Login</button></a>
+		</span>
     </div>
+    
+		
   </form>
-  <form class="modal-content animate" action="<%=request.getContextPath()%>/login" method="Post">
-	<button type="submit">Login</button>
-</form>
 </div></div>
 </body>
 </html>
