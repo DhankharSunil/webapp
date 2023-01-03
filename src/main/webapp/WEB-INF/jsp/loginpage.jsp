@@ -143,18 +143,18 @@ window.history.foward(-1)
 			<%
 			Object o = "abc" + session.getAttribute("A143");
 			if (o.equals("abc2")) {
-				if (session.getAttribute("loginTest") != null) {
+				if (session.getAttribute("massege") != null) {
 		%>
 			<div class="alert alert-<%=session.getAttribute("alertType")%> alert-dismissable">
 				<i class="fa fa-check"></i>
 				<!-- <button type="button" class="close" data-dismiss="alert"
 					aria-hidden="true">&times;</button> -->
-				<b>Alert! </b><%=session.getAttribute("loginTest")%>
+				<b>Alert! </b><%=session.getAttribute("massege")%>
 			</div>
 			<%
 			}
 				session.removeAttribute("A143");
-				session.removeAttribute("loginTest");
+				session.removeAttribute("massege");
 			}
 		%>
     <div class="imgcontainer">

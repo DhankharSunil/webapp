@@ -173,19 +173,19 @@ span.psw {
 			<%
 			Object o = "abc" + session.getAttribute("A143");
 			if (o.equals("abc2")) {
-				if (session.getAttribute("usrMsg") != null) {
+				if (session.getAttribute("massege") != null) {
 		%>
 			<div
 				class="alert alert-<%=session.getAttribute("alertType")%> alert-dismissable">
 				<i class="fa fa-check"></i>
 				<!-- <button type="button" class="close" data-dismiss="alert"
 					aria-hidden="true">&times;</button> -->
-				<b>Alert! </b><%=session.getAttribute("usrMsg")%>
+				<b>Alert! </b><%=session.getAttribute("massege")%>
 			</div>
 			<%
 			}
-				session.removeAttribute("");
-				session.removeAttribute("usrMsg");
+				session.removeAttribute("A143");
+				session.removeAttribute("massege");
 			}
 		%>
 <form class="modal-content animate" name="form1"  action="<%=request.getContextPath()%>/registeruser" method="Post">

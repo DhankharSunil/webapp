@@ -75,7 +75,7 @@ public class LoginRegister {
 					String s1 = "";
 					s1 = " </strong> Email Already Exist !! </strong>";
 					session.setAttribute("A143", "2");
-					session.setAttribute("usrMsg", s1);
+					session.setAttribute("massege", s1);
 					session.setAttribute("alertType", "success");
 					userReturn = "redirect:/registerpage";
 				}else {
@@ -112,13 +112,13 @@ public class LoginRegister {
 				returnType = "homepage";
 			}else {
 				session.setAttribute("A143", "2");
-				session.setAttribute("loginTest", "Enter Currect Password");
+				session.setAttribute("massege", "Enter Currect Password");
 				session.setAttribute("alertType", "success");
 				returnType = "loginpage";
 			}
 		}else {
 			session.setAttribute("A143", "2");
-			session.setAttribute("uploadTest", "Enter Valid E-mail");
+			session.setAttribute("massege", "Enter Valid E-mail");
 			session.setAttribute("alertType", "success");
 			returnType = "loginpage";
 		}
