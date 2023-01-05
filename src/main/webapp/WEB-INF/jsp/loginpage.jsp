@@ -130,8 +130,10 @@ $(document).ready(function() {
   });
 </script>
 <script type="text/javascript">
+if(request.getSession().getAttribute("usercode")==null){
 function back_block() {
 window.history.foward(-1)
+}
 }
 </script>
 </head>
@@ -171,7 +173,7 @@ window.history.foward(-1)
 			style="color: white; background: #04AA6D; padding: 12px;margin:0px,10px; border-color: #04AA6D; text-transform: none; "
 				value="Register">Register</button></a>
 		</span>
-		<a href="<%=request.getContextPath()%>/registerpage" style="color: #1b7e9f;margin: 10px" tabindex="7">
+		<a href="<%=request.getContextPath()%>/passreset" style="color: #1b7e9f;margin: 10px" tabindex="7">
 		<i class="fa fa-key" aria-hidden="true"> </i> Forgot Password</a>
     	</div>
     </div>

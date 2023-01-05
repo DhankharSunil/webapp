@@ -7,6 +7,21 @@ public class UserLoginRegister {
 	String uname;
 	String pass;
 	String copass;
+	String RESET_TOKEN;
+	String flag;
+	
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+	public String getRESET_TOKEN() {
+		return RESET_TOKEN;
+	}
+	public void setRESET_TOKEN(String rESET_TOKEN) {
+		RESET_TOKEN = rESET_TOKEN;
+	}
 	public String getFname() {
 		return fname;
 	}

@@ -169,18 +169,18 @@ if(session.getAttribute("username") == null){
 				session.removeAttribute("massege");
 			}
 		%>
-<form action="uploadfile" method="post"  enctype="multipart/form-data">
-	<!-- <label class="col-sm-2 required"> File Type </label>
+<!-- <form action="uploadfile" method="post"  enctype="multipart/form-data">
+	<label class="col-sm-2 required"> File Type </label>
 	<div class="col-sm-2 ">
 			<select name="fileType" id="fileType" class="validate[required] form-control">
 				<option value="">Select Type</option>
 				<option value="IPL">IPL</option>
 				<option value="other">Other</option>
 			</select>
-	</div> -->
+	</div>
 <label class="col-sm-2 required"><b>Select file:</b></label><input type="file" name="file" size="50" />
 <input type="submit" name="submit" >
-<br /></form>
+<br /></form> -->
 	<form class="modal-content animate" action="<%=request.getContextPath()%>/logout" method="Post">
 		<button type="submit">Logout</button>
 	</form>

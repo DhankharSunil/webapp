@@ -1,11 +1,14 @@
 package com.web.controller;
 
+import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import com.commen.controller.EncryptionUtil;
@@ -81,6 +84,9 @@ public class LoginRegister {
 				}else {
 					boolean result = loginRegisterService.insertuserdetails(user);
 					System.out.println("Result Status :::: "+result);
+					session.setAttribute("A143", "2");
+					session.setAttribute("massege", "Register Successfull, Login");
+					session.setAttribute("alertType", "success");
 					userReturn = "loginpage";
 				}
 			}catch (Exception e) {
@@ -123,5 +129,69 @@ public class LoginRegister {
 			returnType = "loginpage";
 		}
 		return returnType;
+	}
+	
+	@RequestMapping(value = "/passreset",method = RequestMethod.GET)
+	public String passreset(HttpServletRequest request, HttpServletResponse responce) {
+		System.out.println("reset pass");
+		return "forgetpass";
+	}
+	
+	@RequestMapping(value = "/otpsend",method = RequestMethod.POST)
+	public String otpsend(HttpServletRequest request, HttpServletResponse responce, ModelMap map) {
+		UserLoginRegister user = new UserLoginRegister();
+		if(request.getParameter("email") != null) {
+			user.setUname(request.getParameter("email"));
+		}
+		boolean statusmail = loginRegisterService.emailExistCheck(user);
+		if(statusmail) {
+			request.getSession().setAttribute("usercode", user.getUname());
+			int len = 6;
+			String otp = "";
+			int ranNo;
+			for (int i = 0; i < len; i++) {
+				ranNo = new Random().nextInt(9);
+				otp = otp.concat(Integer.toString(ranNo));
+			}
+			request.getSession().setAttribute("otp", otp);
+			map.addAttribute("sendotp", otp);
+			map.addAttribute("usercode", user.getUname());
+			System.out.println(otp);
+		}else {
+			request.getSession().setAttribute("A143", "2");
+			request.getSession().setAttribute("massege", "Enter Currect Email");
+			request.getSession().setAttribute("alertType", "success");
+			return "forgetpass";
+		}
+		return "newpass";
+	}
+	
+	@RequestMapping(value = "/password-change",method = RequestMethod.POST)
+	public String passwordchange(HttpServletRequest request, HttpServletResponse responce) {
+		UserLoginRegister user = new UserLoginRegister();
+		if(request.getParameter("password") != null) {
+			user.setPass(request.getParameter("password"));
+		}
+		if(request.getParameter("confirm") != null) {
+			user.setCopass(request.getParameter("confirm"));
+		}
+		if(request.getSession().getAttribute("username") != null) {
+			user.setUname((String) request.getSession().getAttribute("username"));
+		}
+		if(user.getPass().equals(user.getCopass())) {
+			boolean passstatus = loginRegisterService.updatepass(user);
+		if(passstatus) {
+			request.getSession().setAttribute("A143", "2");
+			request.getSession().setAttribute("massege", "update password");
+			request.getSession().setAttribute("alertType", "success");
+			return"loginpage";
+		}else {
+			request.getSession().setAttribute("A143", "2");
+			request.getSession().setAttribute("massege", "Enter Currect Email");
+			request.getSession().setAttribute("alertType", "success");
+			return "forgetpass";
+		}
+		}
+		return "mailotp";
 	}
 }

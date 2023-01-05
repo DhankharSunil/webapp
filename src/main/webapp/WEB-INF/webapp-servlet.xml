@@ -44,5 +44,4 @@
 	<bean class="com.webapp.service.LoginRegisterService" name="loginRegisterService">
 		<property name="jdbcTemplate" ref="jt"/>
 	</bean>
-	
 </beans>
