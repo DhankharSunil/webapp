@@ -5,7 +5,15 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Properties;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -157,6 +165,11 @@ public class LoginRegister {
 			map.addAttribute("sendotp", otp);
 			map.addAttribute("usercode", user.getUname());
 			System.out.println(otp);
+			String message = "Hello , Your WebApp OTP - "+otp;
+	        String subject = "OTP Configretion";
+	        String to = user.getUname();
+	        String from = "dhankharss476@gmail.com";
+	        sendMail(message, subject, to, from);
 		}else {
 			request.getSession().setAttribute("A143", "2");
 			request.getSession().setAttribute("massege", "Enter Currect Email");
@@ -165,33 +178,64 @@ public class LoginRegister {
 		}
 		return "newpass";
 	}
-	
+	private static void sendMail(String message, String subject, String to, String from) {
+		String host = "smtp.gmail.com";
+		Properties properties = System.getProperties();
+		properties.put("mail.smtp.host", host);
+		properties.put("mail.smtp.port", "465");
+		properties.put("mail.smtp.ssl.enable", "true");
+		properties.put("mail.smtp.auth", "true");
+		Session session = Session.getInstance(properties, new Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication("dhankharss476@gmail.com", "uamvzaluewzvguii");
+			}
+		});
+		session.setDebug(true);
+		MimeMessage mime = new MimeMessage(session);
+		try {
+			mime.setFrom(from);
+			mime.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			mime.setSubject(subject);
+			mime.setText(message);
+			Transport.send(mime);
+			System.out.println("send Massage ");
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+	}
 	@RequestMapping(value = "/password-change",method = RequestMethod.POST)
 	public String passwordchange(HttpServletRequest request, HttpServletResponse responce) {
 		UserLoginRegister user = new UserLoginRegister();
+		String otpis = request.getParameter("mailotp");
 		if(request.getParameter("password") != null) {
-			user.setPass(request.getParameter("password"));
+			user.setPass(EncryptionUtil.decryptPassJS(request.getParameter("password")));
 		}
 		if(request.getParameter("confirm") != null) {
-			user.setCopass(request.getParameter("confirm"));
+			user.setCopass(EncryptionUtil.decryptPassJS(request.getParameter("confirm")));
 		}
-		if(request.getSession().getAttribute("username") != null) {
-			user.setUname((String) request.getSession().getAttribute("username"));
+		if(request.getSession().getAttribute("usercode") != null) {
+			user.setUname((String) request.getSession().getAttribute("usercode"));
 		}
-		if(user.getPass().equals(user.getCopass())) {
+		System.out.println("Change pass "+user.getUname());
+		if(request.getSession().getAttribute("otp").equals(otpis)) {
 			boolean passstatus = loginRegisterService.updatepass(user);
-		if(passstatus) {
-			request.getSession().setAttribute("A143", "2");
-			request.getSession().setAttribute("massege", "update password");
-			request.getSession().setAttribute("alertType", "success");
-			return"loginpage";
+			if(passstatus) {
+				request.getSession().setAttribute("A143", "2");
+				request.getSession().setAttribute("massege", "update password");
+				request.getSession().setAttribute("alertType", "success");
+				return"loginpage";
+			}else {
+				request.getSession().setAttribute("A143", "2");
+				request.getSession().setAttribute("massege", "Somthing Went Wrong!");
+				request.getSession().setAttribute("alertType", "success");
+				return "forgetpass";
+			}
 		}else {
 			request.getSession().setAttribute("A143", "2");
-			request.getSession().setAttribute("massege", "Enter Currect Email");
+			request.getSession().setAttribute("massege", "OTP Not Matched!");
 			request.getSession().setAttribute("alertType", "success");
-			return "forgetpass";
 		}
-		}
-		return "mailotp";
+		return "newpass";
 	}
 }

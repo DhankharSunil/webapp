@@ -184,6 +184,9 @@ if(session.getAttribute("username") == null){
 	<form class="modal-content animate" action="<%=request.getContextPath()%>/logout" method="Post">
 		<button type="submit">Logout</button>
 	</form>
+	<form class="modal-content animate" action="<%=request.getContextPath()%>/mailsend" method="Post">
+		<button type="submit">mailsend</button>
+	</form>
 	</div>
 </body>
 </html>

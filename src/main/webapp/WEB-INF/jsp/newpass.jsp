@@ -135,8 +135,6 @@ span.psw {
 		}
 	}
 
-
-
 	function onCheck() {
 		  const password = document.querySelector('input[name=password]');
 		  const confirm = document.querySelector('input[name=confirm]');
@@ -168,14 +166,14 @@ span.psw {
 				session.removeAttribute("massege");
 			}
 		%>
-<form class="modal-content animate" name="form1"  <%-- action="<%=request.getContextPath()%>/password-change" --%> method="Post">
+<form class="modal-content animate" name="form1" action="<%=request.getContextPath()%>/password-change" method="Post">
     <div class="container">
     <h1 style="color: #247998; text-align: center; font-family: proxima-nova; margin-left: -10px;
 			    margin-right: auto; margin-bottom: 40px; margin-top: 10px;">Reset Password</h1>
 		<label for="otp"><b>OTP Send To <%=request.getSession().getAttribute("usercode") %> OTP is <%=request.getSession().getAttribute("otp")%></b></label>
 		<input type="text" placeholder="Enter OTP" name="mailotp" Maxlength="6" 
 		oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" required>
-        <label><b>Password</b><input name="password" placeholder="Enter Password" type="password" onChange="onCheck()" required/> </label><br />
+        <label><b>New Password</b><input name="password" placeholder="Enter Password" type="password" onChange="onCheck()" required/> </label><br />
   		<label><b>Confirm Password</b><input name="confirm" placeholder="Confirm Password"  type="password" onChange="onCheck()" required/> </label><br />
       <button type="submit" onchange="checkotp(document.form1.<%=request.getSession().getAttribute("otp")%>)">Change</button>
       
