@@ -74,7 +74,6 @@ public class LoginRegister {
 			user.setCopass(EncryptionUtil.decryptPassJS(request.getParameter("password").trim()));
 		}
 		if(user.getPass().equals(user.getCopass())) {
-			try {
 				boolean emailStatus = false;
 				try {
 					emailStatus = loginRegisterService.emailExistCheck(user);
@@ -90,16 +89,24 @@ public class LoginRegister {
 					session.setAttribute("alertType", "success");
 					userReturn = "redirect:/registerpage";
 				}else {
-					boolean result = loginRegisterService.insertuserdetails(user);
-					System.out.println("Result Status :::: "+result);
-					session.setAttribute("A143", "2");
-					session.setAttribute("massege", "Register Successfull, Login");
-					session.setAttribute("alertType", "success");
-					userReturn = "loginpage";
+					try {
+						boolean result = loginRegisterService.insertuserdetails(user);
+						System.out.println("Result Status :::: "+result);
+						if(result) {
+							session.setAttribute("A143", "2");
+							session.setAttribute("massege", "Register Successfull, Login");
+							session.setAttribute("alertType", "success");
+							userReturn = "loginpage";
+						}else {
+							session.setAttribute("A143", "2");
+							session.setAttribute("massege", "Register Failed, Please Try Again");
+							session.setAttribute("alertType", "success");
+							userReturn = "Registerpage";
+						}
+					}catch (Exception e) {
+						System.out.println("controller "+e);
+					}
 				}
-			}catch (Exception e) {
-				System.out.println("controller "+e);
-			}
 		}else {
 			System.out.println("Password Can not Matched");
 		}
@@ -119,14 +126,22 @@ public class LoginRegister {
 		}
 		boolean unameCheck = loginRegisterService.getloginDetails(user);
 		if(unameCheck) {
-			boolean passCheck = loginRegisterService.getpassDetails(user);
-			if(passCheck) {
-				session.setAttribute("username", user.getUname());
-				System.out.println(session.getAttribute("username"));
-				returnType = "homepage";
+			boolean accountcheck = loginRegisterService.checkAccountExist(user);
+			if(accountcheck) {
+				boolean passCheck = loginRegisterService.getpassDetails(user);
+				if(passCheck) {
+					session.setAttribute("username", user.getUname());
+					System.out.println(session.getAttribute("username"));
+					returnType = "homepage";
+				}else {
+					session.setAttribute("A143", "2");
+					session.setAttribute("massege", "Enter Currect Password");
+					session.setAttribute("alertType", "success");
+					returnType = "loginpage";
+				}
 			}else {
 				session.setAttribute("A143", "2");
-				session.setAttribute("massege", "Enter Currect Password");
+				session.setAttribute("massege", "This Account Is Disble");
 				session.setAttribute("alertType", "success");
 				returnType = "loginpage";
 			}
@@ -237,5 +252,29 @@ public class LoginRegister {
 			request.getSession().setAttribute("alertType", "success");
 		}
 		return "newpass";
+	}
+	@RequestMapping(value = "/deletedaccount",method = RequestMethod.POST)
+	public String deletedaccount(HttpServletRequest request, HttpServletResponse response) {
+		UserLoginRegister user = new UserLoginRegister();
+		String usermail = request.getSession().getAttribute("username").toString();
+		System.out.println(usermail);
+		user.setUname(usermail);
+		boolean delAccount = false;
+		try {
+			delAccount = loginRegisterService.deleteAccountid(user);
+		}catch (Exception e) {
+			System.out.println("delete Account Exception "+e);
+		}
+		if(delAccount) {
+		request.getSession().setAttribute("A143", "2");
+		request.getSession().setAttribute("massege", "Account Deleted Successfull");
+		request.getSession().setAttribute("alertType", "success");
+		return "loginpage";
+		}else {
+			request.getSession().setAttribute("A143", "2");
+			request.getSession().setAttribute("massege", "Account Not Deleted Now , Try Again");
+			request.getSession().setAttribute("alertType", "success");
+			return "homepage";
+		}
 	}
 }

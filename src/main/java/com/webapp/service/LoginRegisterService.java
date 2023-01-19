@@ -56,12 +56,32 @@ public class LoginRegisterService {
 	}
 	
 	public boolean emailExistCheck(final UserLoginRegister user) {
-		String sql = "select * from T_USER_DETAILS where EMAILID = ?";
+		String sql = "select * from T_USER_DETAILS where EMAILID = ? AND FLAG = ?";
 		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) {
 				boolean emailStatus = false;
 			try {
 				ps.setString(1, user.getUname());
+				ps.setString(2, "Y");
+				if(ps.executeUpdate() > 0) {
+					emailStatus = true;
+				}
+			} catch (Exception e) {
+				System.out.println("SQL email Check "+e);
+			}
+			return emailStatus;
+			}
+		});
+	}
+	
+	public boolean checkAccountExist(UserLoginRegister user) {
+		String sql = "select * from T_USER_DETAILS where EMAILID = ? AND FLAG = ?";
+		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
+			public Boolean doInPreparedStatement(PreparedStatement ps) {
+				boolean emailStatus = false;
+			try {
+				ps.setString(1, user.getUname());
+				ps.setString(2, "Y");
 				if(ps.executeUpdate() > 0) {
 					emailStatus = true;
 				}
@@ -112,13 +132,14 @@ public class LoginRegisterService {
 	}
 	
 	public boolean getpassDetails(final UserLoginRegister user) {
-		String sql = "select * from T_USER_DETAILS where EMAILID = ? and PASSWORD = ?";
+		String sql = "select * from T_USER_DETAILS where EMAILID = ? and PASSWORD = ? AND FLAG = ?";
 		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) {
 				boolean emailStatus = false;
 			try {
 				ps.setString(1, user.getUname());
 				ps.setString(2, user.getPass());
+				ps.setString(3, "Y");
 				if(ps.executeUpdate() > 0) {
 					emailStatus = true;
 				}
@@ -131,11 +152,12 @@ public class LoginRegisterService {
 	}
 	
 	public UserLoginRegister getUserCredentialsbyUserCode(final UserLoginRegister login) {
-		String sql="select * from T_USER_DETAILS where EMAILID = ?";
+		String sql="select * from T_USER_DETAILS where EMAILID = ? AND FLAG = ?";
 		return jdbcTemplate.query(sql,new PreparedStatementSetter() {
 			public void setValues(PreparedStatement ps)  {
 				try {
 				ps.setString(1, login.getUname());
+				ps.setString(2, "Y");
 				}catch(Exception e) {System.out.println("Exception getUserCredentialsbyUserCode:"+e);}
 			}
 		}, new ResultSetExtractor<UserLoginRegister>() {
@@ -152,6 +174,26 @@ public class LoginRegisterService {
 				return reLogin;
 			}
 		});
+	}
+	public boolean deleteAccountid(UserLoginRegister user) {
+		String sql = "UPDATE T_USER_DETAILS SET FLAG = ?\r\n"
+				+ "WHERE EMAILID=?";
+		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
+			public Boolean doInPreparedStatement(PreparedStatement ps) {
+				boolean emailStatus = false;
+			try {
+				ps.setString(1, "N");
+				ps.setNString(2, user.getUname());
+				if(ps.executeUpdate() > 0) {
+					emailStatus = true;
+				}
+			} catch (Exception e) {
+				System.out.println("SQL email Check "+e);
+			}
+			return emailStatus;
+			}
+		});
+	//	return false;
 	}
 	
 }
