@@ -109,7 +109,7 @@ public class EncryptionUtil {
 		return null;
 	}
 	public static void main(final String args[]) {
-		String a=EncryptionUtil.encode("Imserver@4321");
+		String a=EncryptionUtil.encode("dhankharss476@gmail.com");
 		System.out.println(a);
 		System.out.println(EncryptionUtil.decode("4bWmZ6vVSQfhNpRtK2R8vg"));
 	}

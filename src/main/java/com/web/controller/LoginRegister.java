@@ -85,7 +85,7 @@ public class LoginRegister {
 					String s1 = "";
 					s1 = " </strong> Email Already Exist !! </strong>";
 					session.setAttribute("A143", "2");
-					session.setAttribute("massege", s1);
+					session.setAttribute("Message143", s1);
 					session.setAttribute("alertType", "success");
 					userReturn = "redirect:/registerpage";
 				}else {
@@ -94,12 +94,12 @@ public class LoginRegister {
 						System.out.println("Result Status :::: "+result);
 						if(result) {
 							session.setAttribute("A143", "2");
-							session.setAttribute("massege", "Register Successfull, Login");
+							session.setAttribute("Message143", "Register Successfull, Login");
 							session.setAttribute("alertType", "success");
 							userReturn = "loginpage";
 						}else {
 							session.setAttribute("A143", "2");
-							session.setAttribute("massege", "Register Failed, Please Try Again");
+							session.setAttribute("Message143", "Register Failed, Please Try Again");
 							session.setAttribute("alertType", "success");
 							userReturn = "Registerpage";
 						}
@@ -135,21 +135,21 @@ public class LoginRegister {
 					returnType = "homepage";
 				}else {
 					session.setAttribute("A143", "2");
-					session.setAttribute("massege", "Enter Currect Password");
+					session.setAttribute("Message143", "Enter Currect Password");
 					session.setAttribute("alertType", "success");
-					returnType = "loginpage";
+					returnType = "redirect:/login";
 				}
 			}else {
 				session.setAttribute("A143", "2");
-				session.setAttribute("massege", "This Account Is Disble");
+				session.setAttribute("Message143", "This Account Is Disble");
 				session.setAttribute("alertType", "success");
-				returnType = "loginpage";
+				returnType = "redirect:/login";
 			}
 		}else {
 			session.setAttribute("A143", "2");
-			session.setAttribute("massege", "Enter Valid E-mail");
+			session.setAttribute("Message143", "Enter Valid E-mail");
 			session.setAttribute("alertType", "success");
-			returnType = "loginpage";
+			returnType = "redirect:/login";
 		}
 		return returnType;
 	}
@@ -187,7 +187,7 @@ public class LoginRegister {
 	        sendMail(message, subject, to, from);
 		}else {
 			request.getSession().setAttribute("A143", "2");
-			request.getSession().setAttribute("massege", "Enter Currect Email");
+			request.getSession().setAttribute("Message143", "Enter Currect Email");
 			request.getSession().setAttribute("alertType", "success");
 			return "forgetpass";
 		}
@@ -237,18 +237,18 @@ public class LoginRegister {
 			boolean passstatus = loginRegisterService.updatepass(user);
 			if(passstatus) {
 				request.getSession().setAttribute("A143", "2");
-				request.getSession().setAttribute("massege", "update password");
+				request.getSession().setAttribute("Message143", "update password");
 				request.getSession().setAttribute("alertType", "success");
 				return"loginpage";
 			}else {
 				request.getSession().setAttribute("A143", "2");
-				request.getSession().setAttribute("massege", "Somthing Went Wrong!");
+				request.getSession().setAttribute("Message143", "Somthing Went Wrong!");
 				request.getSession().setAttribute("alertType", "success");
 				return "forgetpass";
 			}
 		}else {
 			request.getSession().setAttribute("A143", "2");
-			request.getSession().setAttribute("massege", "OTP Not Matched!");
+			request.getSession().setAttribute("Message143", "OTP Not Matched!");
 			request.getSession().setAttribute("alertType", "success");
 		}
 		return "newpass";
@@ -267,12 +267,12 @@ public class LoginRegister {
 		}
 		if(delAccount) {
 		request.getSession().setAttribute("A143", "2");
-		request.getSession().setAttribute("massege", "Account Deleted Successfull");
+		request.getSession().setAttribute("Message143", "Account Deleted Successfull");
 		request.getSession().setAttribute("alertType", "success");
 		return "loginpage";
 		}else {
 			request.getSession().setAttribute("A143", "2");
-			request.getSession().setAttribute("massege", "Account Not Deleted Now , Try Again");
+			request.getSession().setAttribute("Message143", "Account Not Deleted Now , Try Again");
 			request.getSession().setAttribute("alertType", "success");
 			return "homepage";
 		}

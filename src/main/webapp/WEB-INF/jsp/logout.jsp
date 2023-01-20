@@ -20,7 +20,7 @@
     </script>
 </head>
 <body>
-<% response.sendRedirect(request.getContextPath()+"/login"); %>
-	
+	<% session.invalidate(); %>
+	<% response.sendRedirect(request.getContextPath()+"/login"); %>
 </body>
 </html>

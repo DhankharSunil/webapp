@@ -1,3 +1,4 @@
+<%@page import="com.commen.controller.EncryptionUtil"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -144,18 +145,18 @@ window.history.foward(-1)
 			<%
 			Object o = "abc" + session.getAttribute("A143");
 			if (o.equals("abc2")) {
-				if (session.getAttribute("massege") != null) {
+				if (session.getAttribute("Message143") != null) {
 		%>
 			<div class="alert alert-<%=session.getAttribute("alertType")%> alert-dismissable">
 				<i class="fa fa-check"></i>
 				<!-- <button type="button" class="close" data-dismiss="alert"
 					aria-hidden="true">&times;</button> -->
-				<b>Alert! </b><%=session.getAttribute("massege")%>
+				<b>Alert! </b><%=session.getAttribute("Message143")%>
 			</div>
 			<%
 			}
 				session.removeAttribute("A143");
-				session.removeAttribute("massege");
+				session.removeAttribute("Message143");
 			}
 		%>
     <div class="imgcontainer">
