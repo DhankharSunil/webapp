@@ -23,6 +23,23 @@ import com.commen.controller.EncryptionUtil;
 import com.web.application.UserLoginRegister;
 import com.webapp.service.LoginRegisterService;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.web.application.IplData;
+import com.webapp.service.LoginRegisterService;
+
 @Controller
 public class LoginRegister {
 	
@@ -277,4 +294,43 @@ public class LoginRegister {
 			return "homepage";
 		}
 	}
+	
+	
+	@RequestMapping(value = "/upload-provision",method=RequestMethod.POST)
+	public String uploadGncdValidClassification(@RequestParam("file")MultipartFile multipartFile,HttpServletRequest request,HttpServletResponse response,Model model) throws IOException {
+		HttpSession session=request.getSession();
+		try {
+			String filename=multipartFile.getOriginalFilename();
+			File file = new File(System.getProperty("user.dir")+File.separator+multipartFile.getOriginalFilename());			
+	    	file.createNewFile();	
+	    	multipartFile.transferTo(file);
+		//	String currentDate=RISLDateUtility.getCurrentDateTime();
+			String fileType="";		
+			if(!filename.isEmpty() && filename.contains("xlsx")) {			
+				if(request.getParameter("fileType")!=null) {
+					fileType=request.getParameter("fileType").toString();
+			}								
+				List<IplData> ipl=LoginRegisterService.readExcel(file,fileType);	
+				
+				System.out.println(ipl);
+				session.setAttribute("A143", "2");
+				session.setAttribute("Message143", "File Upload Successfully!");
+				session.setAttribute("alertType", "success");
+				return "homepage";
+		}else {
+			session.setAttribute("A143", "2");
+			session.setAttribute("Message143", "Required file is not in excel format!");
+			session.setAttribute("alertType", "danger");
+			return "homepage";
+		}
+	}catch (Exception e) {
+			session.setAttribute("A143", "2");
+			session.setAttribute("Message143", "Error while uploading the file!");
+			session.setAttribute("alertType", "danger");
+			System.out.println("exception in DataProcessing.uploadIpldata "+e);
+	}
+		return "homepage";
+	}
+	
+	
 }

@@ -1,8 +1,22 @@
 package com.webapp.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
@@ -11,6 +25,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
+import com.web.application.IplData;
 import com.web.application.UserLoginRegister;
 
 @Service
@@ -193,5 +208,41 @@ public class LoginRegisterService {
 			return emailStatus;
 			}
 		});
+	}
+	
+	public static List<IplData> readExcel(final File file,final String fileType) throws IOException, ParseException {
+		List<IplData> iplAll = new ArrayList<IplData>();	
+		FileInputStream inputStream = new FileInputStream(file);
+		Workbook workbook = new XSSFWorkbook(inputStream);
+		Sheet firstSheet = workbook.getSheetAt(0);
+		Iterator<Row> rowIterator = firstSheet.iterator();
+		DataFormatter formatter = new DataFormatter();
+		rowIterator.next();
+			while (rowIterator.hasNext()) {
+				IplData ipl = new IplData();
+				Row nextRow = rowIterator.next();
+				Iterator<Cell> cellIterator = nextRow.cellIterator();
+
+				while (cellIterator.hasNext()) {
+					Cell nextCell = cellIterator.next();				
+					int columnIndex = nextCell.getColumnIndex();				
+					switch (columnIndex) {
+					case 0:
+						String date = formatter.formatCellValue(nextCell);
+						ipl.setDate(date);
+						break;
+					case 1:
+						String time = formatter.formatCellValue(nextCell);
+						ipl.setTime(time);
+						break;
+					case 2:
+						String Team = formatter.formatCellValue(nextCell);
+						ipl.setMatch(Team);
+						break;
+					}				
+				}
+				iplAll.add(ipl);
+			}
+		return iplAll;
 	}
 }

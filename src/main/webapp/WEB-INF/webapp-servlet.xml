@@ -44,4 +44,8 @@
 	<bean class="com.webapp.service.LoginRegisterService" name="loginRegisterService">
 		<property name="jdbcTemplate" ref="jt"/>
 	</bean>
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="20848820993493" />
+	</bean>
 </beans>

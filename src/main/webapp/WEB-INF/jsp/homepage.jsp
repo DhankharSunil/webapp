@@ -140,6 +140,11 @@ span.psw {
         function noBack() {
             window.history.forward();
         }
+        
+        function required(){
+        	$("#fileUpload").prop("required", true);
+        	$("#fileType").prop("required", true);	
+        }
     </script>
 </head>
 <body>
@@ -169,7 +174,33 @@ if(session.getAttribute("username") == null){
 				session.removeAttribute("Message143");
 			}
 		%>
-
+		<h4><b>File Upload</b></h4>
+					<div class="row">
+						<div class="col-lg-12">
+							<form class="form-horizontal" id="form14" action="<%=request.getContextPath()%>/upload-provision" method="post" enctype="multipart/form-data" onsubmit="return required();">
+								<div class="panel box box-primary">
+									<br>
+									<div class="box-body topPadding">
+									
+										<div class="row ">
+										
+											<label class="col-sm-2">Upload File- </label>
+											<div id="filediv">
+												<label class="col-sm-1 required"> File </label>
+												<div class="col-sm-3 ">
+													<input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="image-upload validate[required] form-control"	id="fileUpload" />
+												</div>
+											</div>
+											
+											<div class="col-sm-2">
+												<input title="Process" value="Process" type="submit" style="background-color: #000080" class="btn btn-primary" id="uploadBtn">
+											</div>											
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
 	<form class="modal-content animate" action="<%=request.getContextPath()%>/logout" method="Post">
 		<button type="submit">Logout</button>
 	</form>
