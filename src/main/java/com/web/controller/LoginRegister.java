@@ -310,8 +310,8 @@ public class LoginRegister {
 				if(request.getParameter("fileType")!=null) {
 					fileType=request.getParameter("fileType").toString();
 			}								
-				List<IplData> ipl=LoginRegisterService.readExcel(file,fileType);	
-				
+				List<IplData> ipl=loginRegisterService.readExcel(file,fileType);	
+				loginRegisterService.uploadExcelintoTable(ipl);
 				System.out.println(ipl);
 				session.setAttribute("A143", "2");
 				session.setAttribute("Message143", "File Upload Successfully!");

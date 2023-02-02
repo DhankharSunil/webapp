@@ -4,6 +4,15 @@ public class IplData {
 	public String date;
 	public String time;
 	public String match;
+	public String yearFrom;
+	
+	
+	public String getYearFrom() {
+		return yearFrom;
+	}
+	public void setYearFrom(String yearFrom) {
+		this.yearFrom = yearFrom;
+	}
 	public String getDate() {
 		return date;
 	}
@@ -24,6 +33,6 @@ public class IplData {
 	}
 	@Override
 	public String toString() {
-		return "IplData [date=" + date + ", time=" + time + ", match=" + match + "]";
+		return "IplData [date=" + date + ", time=" + time + ", match=" + match + ", yearFrom=" + yearFrom + "]";
 	}
 }

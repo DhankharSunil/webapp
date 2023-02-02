@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -210,7 +212,7 @@ public class LoginRegisterService {
 		});
 	}
 	
-	public static List<IplData> readExcel(final File file,final String fileType) throws IOException, ParseException {
+	public List<IplData> readExcel(final File file,final String fileType) throws IOException, ParseException {
 		List<IplData> iplAll = new ArrayList<IplData>();	
 		FileInputStream inputStream = new FileInputStream(file);
 		Workbook workbook = new XSSFWorkbook(inputStream);
@@ -244,5 +246,26 @@ public class LoginRegisterService {
 				iplAll.add(ipl);
 			}
 		return iplAll;
+	}
+	public int[] uploadExcelintoTable(List<IplData> ipl) {
+		String sql = "INSERT INTO T_IPL_DATA (DATE_OF_MATCH,TIME_OF_MATCH,MATCH,YEAR_OF) VALUES (?,?,?,'2023')";
+		return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				IplData ipldata = ipl.get(i);
+				try {
+					ps.setString(1, ipldata.getDate());
+					ps.setString(2, ipldata.getTime());
+					ps.setString(3, ipldata.getMatch());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public int getBatchSize() {
+				return ipl.size();
+			}
+		});
 	}
 }
