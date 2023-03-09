@@ -50,7 +50,7 @@ public class LoginRegister {
 	public String login(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("In Home");
 		return "loginpage";
-	//	return "testingCode";
+	//	return "testCode/testing";
 	}
 	
 	@RequestMapping(value = "/registerpage", method = {RequestMethod.POST,RequestMethod.GET})
@@ -89,6 +89,15 @@ public class LoginRegister {
 		}
 		if (request.getParameter("confirm") != null) {
 			user.setCopass(EncryptionUtil.decryptPassJS(request.getParameter("password").trim()));
+		}
+		if(request.getParameter("mobile") != null) {
+			user.setMobileNo(request.getParameter("mobile"));
+		}
+		if(request.getParameter("stt") != null) {
+			user.setState(request.getParameter("stt"));
+		}
+		if(request.getParameter("district") != null) {
+			user.setDistrict(request.getParameter("district"));
 		}
 		if(user.getPass().equals(user.getCopass())) {
 				boolean emailStatus = false;
@@ -143,11 +152,14 @@ public class LoginRegister {
 		}
 		boolean unameCheck = loginRegisterService.getloginDetails(user);
 		if(unameCheck) {
-			boolean accountcheck = loginRegisterService.checkAccountExist(user);
+			boolean accountcheck = loginRegisterService.emailExistCheck(user);
 			if(accountcheck) {
-				boolean passCheck = loginRegisterService.getpassDetails(user);
-				if(passCheck) {
-					session.setAttribute("username", user.getUname());
+				UserLoginRegister passCheck = loginRegisterService.getpassDetails(user);
+				if(passCheck != null) {
+					
+					session.setAttribute("username", passCheck.getFname()+" "+passCheck.getLname());
+					session.setAttribute("email", passCheck.getUname());
+					session.setAttribute("pass", passCheck.getPass());
 					System.out.println(session.getAttribute("username"));
 					returnType = "homepage";
 				}else {
@@ -295,11 +307,17 @@ public class LoginRegister {
 		}
 	}
 	
+	@RequestMapping(value = "/uploaddata",method = RequestMethod.GET)
+	public String uploaddata(HttpServletRequest request, HttpServletResponse responce) {
+		System.out.println("upload Data");
+		return "uploaddata";
+	}
 	
 	@RequestMapping(value = "/upload-provision",method=RequestMethod.POST)
 	public String uploadGncdValidClassification(@RequestParam("file")MultipartFile multipartFile,HttpServletRequest request,HttpServletResponse response,Model model) throws IOException {
 		HttpSession session=request.getSession();
 		try {
+			String userMail = request.getSession().getAttribute("email").toString();
 			String filename=multipartFile.getOriginalFilename();
 			File file = new File(System.getProperty("user.dir")+File.separator+multipartFile.getOriginalFilename());			
 	    	file.createNewFile();	
@@ -310,9 +328,10 @@ public class LoginRegister {
 				if(request.getParameter("fileType")!=null) {
 					fileType=request.getParameter("fileType").toString();
 			}								
-				List<IplData> ipl=loginRegisterService.readExcel(file,fileType);	
-				loginRegisterService.uploadExcelintoTable(ipl);
+				List<IplData> ipl=loginRegisterService.readExcel(file,fileType);
 				System.out.println(ipl);
+				loginRegisterService.uploadExcelintoTable(ipl,userMail);
+				
 				session.setAttribute("A143", "2");
 				session.setAttribute("Message143", "File Upload Successfully!");
 				session.setAttribute("alertType", "success");
@@ -332,5 +351,35 @@ public class LoginRegister {
 		return "homepage";
 	}
 	
+	@RequestMapping(value = "/getalldata",method = {RequestMethod.GET,RequestMethod.POST})
+	public String getalldata(HttpServletRequest request, HttpServletResponse responce) {
+		System.out.println("View Data");
+		return "viewdetails";
+	}
 	
+	@RequestMapping(value ="/getprofile",method = RequestMethod.GET)
+	public String getprofile(HttpServletRequest request,HttpServletResponse response , ModelMap map) {
+		System.out.println("in profile");
+		UserLoginRegister user = new UserLoginRegister();
+		if(request.getSession().getAttribute("email") != null) {
+			user.setUname(request.getSession().getAttribute("email").toString());
+		}
+		if(request.getSession().getAttribute("pass") != null) {
+			user.setPass(request.getSession().getAttribute("pass").toString());
+		}
+		UserLoginRegister passCheck = loginRegisterService.getpassDetails(user);
+		map.addAttribute("data", passCheck);
+		return "webappstart/profile";
+	}
+	@RequestMapping(value = "/cricketpage",method = RequestMethod.POST)
+	public String cricketpage(HttpServletRequest request, HttpServletResponse responce) {
+		System.out.println("Data");
+		String year=request.getParameter("year");
+		IplData ipl = new IplData();
+		List<IplData> cricketdata = null;
+		cricketdata = loginRegisterService.getcricketdata(year);
+		System.out.println(cricketdata.size());
+		request.setAttribute("data", cricketdata);
+		return "cricket/cricketpage";
+	}
 }

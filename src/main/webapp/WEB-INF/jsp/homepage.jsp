@@ -6,6 +6,35 @@
 <meta charset="ISO-8859-1">
 <title>.:: WebApp ::.</title>
 <style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #04AA6D;
+}
+</style>
+<style>
 body {font-family: Arial, Helvetica, sans-serif;}
 
 /* Full-width input fields */
@@ -136,11 +165,6 @@ span.psw {
     </style>
       
     <script type="text/javascript">
-        window.history.forward();
-        function noBack() {
-            window.history.forward();
-        }
-        
         function required(){
         	$("#fileUpload").prop("required", true);
         	$("#fileType").prop("required", true);	
@@ -153,7 +177,17 @@ if(session.getAttribute("username") == null){
 	response.sendRedirect(request.getContextPath()+"/login");
 }
 %>
-	<h1><%request.getSession().getAttribute("username"); %>Welcome in HomePage</h1>
+<div class="header">
+  <h1>WebApp</h1>
+</div>
+
+	<ul>
+  <li><a class="active" href="#home">Home</a></li>
+  <li><a href="getalldata">Cricket</a></li>
+  <li><a href="#contact">Contact</a></li>
+  <li><a href="#about">About</a></li>
+  <li style="float:right"><a class="active" href="getprofile"><%= request.getSession().getAttribute("username") %></a></li>
+</ul>
 	<div class="row">
 		<div class="col-md-12">
 			<%
@@ -174,39 +208,16 @@ if(session.getAttribute("username") == null){
 				session.removeAttribute("Message143");
 			}
 		%>
-		<h4><b>File Upload</b></h4>
-					<div class="row">
-						<div class="col-lg-12">
-							<form class="form-horizontal" id="form14" action="<%=request.getContextPath()%>/upload-provision" method="post" enctype="multipart/form-data" onsubmit="return required();">
-								<div class="panel box box-primary">
-									<br>
-									<div class="box-body topPadding">
-									
-										<div class="row ">
-										
-											<label class="col-sm-2">Upload File- </label>
-											<div id="filediv">
-												<label class="col-sm-1 required"> File </label>
-												<div class="col-sm-3 ">
-													<input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="image-upload validate[required] form-control"	id="fileUpload" />
-												</div>
-											</div>
-											
-											<div class="col-sm-2">
-												<input title="Process" value="Process" type="submit" style="background-color: #000080" class="btn btn-primary" id="uploadBtn">
-											</div>											
-										</div>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-	<form class="modal-content animate" action="<%=request.getContextPath()%>/logout" method="Post">
+		<div class="content animate" style="width:10%;"><a href="uploaddata"> <button type="submit">Upload File</button> </a>
+		<a href="getalldata"> <button type="submit">View Match</button> </a>
+		</div>
+		
+	<%-- <form class="modal-content animate" action="<%=request.getContextPath()%>/logout" method="Post">
 		<button type="submit">Logout</button>
-	</form>
-	<form class="modal-content animate" action="<%=request.getContextPath()%>/deletedaccount" method="Post">
+	</form> --%>
+	<%-- <form class="modal-content animate" action="<%=request.getContextPath()%>/deletedaccount" method="Post">
 		<button type="submit">Delete Account</button>
-	</form>
+	</form> --%>
 	</div></div>
 </body>
 </html>

@@ -52,7 +52,7 @@ public class LoginRegisterService {
 	}
 	
 	public boolean insertuserdetails(final UserLoginRegister user) {
-		String sql = "INSERT INTO T_USER_DETAILS (FIRSTNAME, LASTNAME, EMAILID, PASSWORD,FLAG) VALUES (?,?,?,?,'Y')";
+		String sql = "INSERT INTO T_USER_DETAILS (FIRSTNAME, LASTNAME, EMAILID, PASSWORD,MOBILENO,DISTRICT,STATES,FLAG) VALUES (?,?,?,?,?,?,?,'Y')";
 		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps)  {
 				boolean insertStatus = false;
@@ -61,6 +61,9 @@ public class LoginRegisterService {
 					ps.setString(2, user.getLname());
 					ps.setString(3, user.getUname());
 					ps.setString(4, user.getPass());
+					ps.setString(5, user.getMobileNo());
+					ps.setString(6, user.getDistrict());
+					ps.setString(7, user.getState());
 					if (ps.executeUpdate() > 0) {
 						insertStatus = true;
 					}
@@ -73,25 +76,6 @@ public class LoginRegisterService {
 	}
 	
 	public boolean emailExistCheck(final UserLoginRegister user) {
-		String sql = "select * from T_USER_DETAILS where EMAILID = ? AND FLAG = ?";
-		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
-			public Boolean doInPreparedStatement(PreparedStatement ps) {
-				boolean emailStatus = false;
-			try {
-				ps.setString(1, user.getUname());
-				ps.setString(2, "Y");
-				if(ps.executeUpdate() > 0) {
-					emailStatus = true;
-				}
-			} catch (Exception e) {
-				System.out.println("SQL email Check "+e);
-			}
-			return emailStatus;
-			}
-		});
-	}
-	
-	public boolean checkAccountExist(UserLoginRegister user) {
 		String sql = "select * from T_USER_DETAILS where EMAILID = ? AND FLAG = ?";
 		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) {
@@ -148,46 +132,30 @@ public class LoginRegisterService {
 		});
 	}
 	
-	public boolean getpassDetails(final UserLoginRegister user) {
-		String sql = "select * from T_USER_DETAILS where EMAILID = ? and PASSWORD = ? AND FLAG = ?";
-		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
-			public Boolean doInPreparedStatement(PreparedStatement ps) {
-				boolean emailStatus = false;
-			try {
-				ps.setString(1, user.getUname());
-				ps.setString(2, user.getPass());
-				ps.setString(3, "Y");
-				if(ps.executeUpdate() > 0) {
-					emailStatus = true;
-				}
-			} catch (Exception e) {
-				System.out.println("SQL email Check "+e);
-			}
-			return emailStatus;
-			}
-		});
-	}
-	
-	public UserLoginRegister getUserCredentialsbyUserCode(final UserLoginRegister login) {
-		String sql="select * from T_USER_DETAILS where EMAILID = ? AND FLAG = ?";
+	public UserLoginRegister getpassDetails(final UserLoginRegister login) {
+		String sql="select * from T_USER_DETAILS where EMAILID = ? and PASSWORD = ? AND FLAG = ?";
 		return jdbcTemplate.query(sql,new PreparedStatementSetter() {
 			public void setValues(PreparedStatement ps)  {
 				try {
 				ps.setString(1, login.getUname());
-				ps.setString(2, "Y");
-				}catch(Exception e) {System.out.println("Exception getUserCredentialsbyUserCode:"+e);}
+				ps.setString(2, login.getPass());
+				ps.setString(3, "Y");
+				}catch(Exception e) {System.out.println("Exception getpassDetails:"+e);}
 			}
 		}, new ResultSetExtractor<UserLoginRegister>() {
 			public UserLoginRegister extractData(ResultSet rs)  {
 				UserLoginRegister reLogin=new UserLoginRegister();
 				try {
 					if(rs.next()) {
-						reLogin.setFlag(rs.getString("FLAG"));
 						reLogin.setFname(rs.getString("FIRSTNAME"));
 						reLogin.setLname(rs.getString("LASTNAME"));
-						reLogin.setPass(rs.getString("PASSWORD"));;
+						reLogin.setUname(rs.getString("EMAILID"));
+						reLogin.setPass(rs.getString("PASSWORD"));
+						reLogin.setMobileNo(rs.getString("MOBILENO"));
+						reLogin.setDistrict(rs.getString("DISTRICT"));
+						reLogin.setState(rs.getString("STATES"));
 					}
-				}catch(Exception e) {System.out.println("Exception getUserCredentialsbyUserCode:"+e);}
+				}catch(Exception e) {System.out.println("Exception getpassDetails:"+e);}
 				return reLogin;
 			}
 		});
@@ -241,14 +209,22 @@ public class LoginRegisterService {
 						String Team = formatter.formatCellValue(nextCell);
 						ipl.setMatch(Team);
 						break;
+					case 3:
+						String vsTeam = formatter.formatCellValue(nextCell);
+						ipl.setVsmatch(vsTeam);
+						break;
+					case 4:
+						String city = formatter.formatCellValue(nextCell);
+						ipl.setCityPlace(city);
+						break;
 					}				
 				}
 				iplAll.add(ipl);
 			}
 		return iplAll;
 	}
-	public int[] uploadExcelintoTable(List<IplData> ipl) {
-		String sql = "INSERT INTO T_IPL_DATA (DATE_OF_MATCH,TIME_OF_MATCH,MATCH,YEAR_OF) VALUES (?,?,?,'2023')";
+	public int[] uploadExcelintoTable(List<IplData> ipl,String userMail) {
+		String sql = "INSERT INTO T_IPL_DATA(MATCH_DATE,MATCH_TIME,HOME_TEAM,AWAY_TEAM,CITY,UPDATE_BY,FROM_YEAR) VALUES(?,?,?,?,?,?,'2023')";
 		return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -257,6 +233,9 @@ public class LoginRegisterService {
 					ps.setString(1, ipldata.getDate());
 					ps.setString(2, ipldata.getTime());
 					ps.setString(3, ipldata.getMatch());
+					ps.setString(4, ipldata.getVsmatch());
+					ps.setString(5, ipldata.getCityPlace());
+					ps.setString(6, userMail);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -268,4 +247,74 @@ public class LoginRegisterService {
 			}
 		});
 	}
+	
+	public IplData getmatchdetails(final IplData ipl) {
+		String sql="SELECT DISTINCT MATCH_DATE,MATCH_TIME,HOME_TEAM,AWAY_TEAM,CITY \r\n"
+				+ "FROM T_IPL_DATA WHERE FROM_YEAR = ? AND CITY LIKE DECODE (?,NULL,'%',?)"
+				+ "AND HOME_TEAM LIKE DECODE (?,NULL,'%',?);";
+		return jdbcTemplate.query(sql,new PreparedStatementSetter() {
+			public void setValues(PreparedStatement ps)  {
+				try {
+				ps.setString(1, "2023");
+				ps.setString(2, ipl.getCityPlace());
+				ps.setString(3, ipl.getCityPlace());
+				ps.setString(4, ipl.getMatch());
+				ps.setString(5, ipl.getMatch());
+				}catch(Exception e) {System.out.println("Exception getmatchdetails : "+e);}
+			}
+		}, new ResultSetExtractor<IplData>() {
+			public IplData extractData(ResultSet rs)  {
+				IplData ipldata = new IplData();
+				try {
+					if(rs.next()) {
+						ipldata.setDate(rs.getString("MATCH_DATE"));
+						ipldata.setTime(rs.getString("MATCH_TIME"));
+						ipldata.setMatch(rs.getString("HOME_TEAM"));
+						ipldata.setVsmatch(rs.getString("AWAY_TEAM"));
+						ipldata.setCityPlace(rs.getString("CITY"));
+					}
+				}catch(Exception e) {System.out.println("Exception getmatchdetails : "+e);}
+				return ipldata;
+			}
+		});
+	}
+	
+	public List<IplData> getcricketdata(final String yearfrom) {
+		String sql="select * from T_IPL_DATA where FROM_YEAR = ?";
+			return jdbcTemplate.query(sql,new PreparedStatementSetter() {
+				@Override
+				public void setValues(PreparedStatement ps)   {
+					try {
+						ps.setString(1, yearfrom);
+					} catch (Exception e) {
+						System.out.println("Got error in injecting parameters into sql query in --getcricketdata() "+e);
+					}
+				}
+			},new ResultSetExtractor<List<IplData>>() {
+
+				public List<IplData> extractData(ResultSet rs)    {
+						
+					List<IplData> voucherAuditTrails=new ArrayList<IplData>();
+					try {		
+					while(rs.next())
+					{
+						IplData ipldata=new IplData();
+						try {
+							ipldata.setDate(rs.getString("MATCH_DATE"));
+							ipldata.setTime(rs.getString("MATCH_TIME"));
+							ipldata.setMatch(rs.getString("HOME_TEAM"));
+							ipldata.setVsmatch(rs.getString("AWAY_TEAM"));
+							ipldata.setCityPlace(rs.getString("CITY"));
+							voucherAuditTrails.add(ipldata);
+						} catch (Exception e) {
+							System.out.println("Got error in fetching result from DB in -- getcriketdata1()"+e);
+						}
+					}
+					}catch(Exception e){System.out.println("Exceptin :"+e);}
+
+
+				return voucherAuditTrails;
+				}
+			});
+		}
 }

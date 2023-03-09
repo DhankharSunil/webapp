@@ -7,9 +7,31 @@ public class UserLoginRegister {
 	String uname;
 	String pass;
 	String copass;
+	String mobileNo;
+	String state;
+	String district;
 	String RESET_TOKEN;
 	String flag;
 	
+	
+	public String getMobileNo() {
+		return mobileNo;
+	}
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getDistrict() {
+		return district;
+	}
+	public void setDistrict(String district) {
+		this.district = district;
+	}
 	public String getFlag() {
 		return flag;
 	}
@@ -55,7 +77,8 @@ public class UserLoginRegister {
 	@Override
 	public String toString() {
 		return "UserLoginRegister [fname=" + fname + ", lname=" + lname + ", uname=" + uname + ", pass=" + pass
-				+ ", copass=" + copass + "]";
+				+ ", copass=" + copass + ", mobileNo=" + mobileNo + ", state=" + state + ", district=" + district
+				+ ", RESET_TOKEN=" + RESET_TOKEN + ", flag=" + flag + "]";
 	}
 	
 	

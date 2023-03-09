@@ -4,6 +4,30 @@ public class IplData {
 	public String date;
 	public String time;
 	public String match;
+	public String vsmatch;
+	public String cityPlace;
+	public String userMail;
+	
+	
+	
+	public String getUserMail() {
+		return userMail;
+	}
+	public void setUserMail(String userMail) {
+		this.userMail = userMail;
+	}
+	public String getVsmatch() {
+		return vsmatch;
+	}
+	public void setVsmatch(String vsmatch) {
+		this.vsmatch = vsmatch;
+	}
+	public String getCityPlace() {
+		return cityPlace;
+	}
+	public void setCityPlace(String cityPlace) {
+		this.cityPlace = cityPlace;
+	}
 	public String yearFrom;
 	
 	
@@ -33,6 +57,7 @@ public class IplData {
 	}
 	@Override
 	public String toString() {
-		return "IplData [date=" + date + ", time=" + time + ", match=" + match + ", yearFrom=" + yearFrom + "]";
+		return "IplData [date=" + date + ", time=" + time + ", match=" + match + ", vsmatch=" + vsmatch + ", cityPlace="
+				+ cityPlace + ", userMail=" + userMail + ", yearFrom=" + yearFrom + "]";
 	}
 }
