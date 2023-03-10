@@ -112,6 +112,26 @@ public class LoginRegisterService {
 		});
 	}
 	
+	public boolean emailpassCheck(final UserLoginRegister user) {
+		String sql = "select * from T_USER_DETAILS where EMAILID = ? AND PASSWORD=? AND FLAG = ?";
+		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Boolean>() {
+			public Boolean doInPreparedStatement(PreparedStatement ps) {
+				boolean emailStatus = false;
+			try {
+				ps.setString(1, user.getUname());
+				ps.setString(2, user.getPass());
+				ps.setString(3, "Y");
+				if(ps.executeUpdate() > 0) {
+					emailStatus = true;
+				}
+			} catch (Exception e) {
+				System.out.println("SQL email Check "+e);
+			}
+			return emailStatus;
+			}
+		});
+	}
+	
 	public boolean updatepass(final UserLoginRegister user) {
 		String sql = "UPDATE T_USER_DETAILS SET PASSWORD = ?\r\n"
 				+ "WHERE EMAILID=?";

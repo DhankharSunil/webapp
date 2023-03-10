@@ -122,12 +122,12 @@ public class LoginRegister {
 							session.setAttribute("A143", "2");
 							session.setAttribute("Message143", "Register Successfull, Login");
 							session.setAttribute("alertType", "success");
-							userReturn = "loginpage";
+							userReturn = "redirect:/login";
 						}else {
 							session.setAttribute("A143", "2");
 							session.setAttribute("Message143", "Register Failed, Please Try Again");
 							session.setAttribute("alertType", "success");
-							userReturn = "Registerpage";
+							userReturn = "redirect:/registerpage";
 						}
 					}catch (Exception e) {
 						System.out.println("controller "+e);
@@ -154,9 +154,10 @@ public class LoginRegister {
 		if(unameCheck) {
 			boolean accountcheck = loginRegisterService.emailExistCheck(user);
 			if(accountcheck) {
-				UserLoginRegister passCheck = loginRegisterService.getpassDetails(user);
-				if(passCheck != null) {
-					
+				boolean emailpassCheck = loginRegisterService.emailpassCheck(user);
+				System.out.println("passCheck = "+emailpassCheck);
+				if(emailpassCheck) {
+					UserLoginRegister passCheck = loginRegisterService.getpassDetails(user);
 					session.setAttribute("username", passCheck.getFname()+" "+passCheck.getLname());
 					session.setAttribute("email", passCheck.getUname());
 					session.setAttribute("pass", passCheck.getPass());
@@ -218,10 +219,11 @@ public class LoginRegister {
 			request.getSession().setAttribute("A143", "2");
 			request.getSession().setAttribute("Message143", "Enter Currect Email");
 			request.getSession().setAttribute("alertType", "success");
-			return "forgetpass";
+			return "redirect:/passreset";
 		}
 		return "newpass";
 	}
+	
 	private static void sendMail(String message, String subject, String to, String from) {
 		String host = "smtp.gmail.com";
 		Properties properties = System.getProperties();
@@ -248,6 +250,7 @@ public class LoginRegister {
 			System.out.println(e);
 		}
 	}
+	
 	@RequestMapping(value = "/password-change",method = RequestMethod.POST)
 	public String passwordchange(HttpServletRequest request, HttpServletResponse responce) {
 		UserLoginRegister user = new UserLoginRegister();
@@ -268,12 +271,12 @@ public class LoginRegister {
 				request.getSession().setAttribute("A143", "2");
 				request.getSession().setAttribute("Message143", "update password");
 				request.getSession().setAttribute("alertType", "success");
-				return"loginpage";
+				return"redirect:/login";
 			}else {
 				request.getSession().setAttribute("A143", "2");
 				request.getSession().setAttribute("Message143", "Somthing Went Wrong!");
 				request.getSession().setAttribute("alertType", "success");
-				return "forgetpass";
+				return "redirect:/passreset";
 			}
 		}else {
 			request.getSession().setAttribute("A143", "2");
@@ -285,7 +288,7 @@ public class LoginRegister {
 	@RequestMapping(value = "/deletedaccount",method = RequestMethod.POST)
 	public String deletedaccount(HttpServletRequest request, HttpServletResponse response) {
 		UserLoginRegister user = new UserLoginRegister();
-		String usermail = request.getSession().getAttribute("username").toString();
+		String usermail = request.getSession().getAttribute("email").toString();
 		System.out.println(usermail);
 		user.setUname(usermail);
 		boolean delAccount = false;
@@ -298,7 +301,7 @@ public class LoginRegister {
 		request.getSession().setAttribute("A143", "2");
 		request.getSession().setAttribute("Message143", "Account Deleted Successfull");
 		request.getSession().setAttribute("alertType", "success");
-		return "loginpage";
+		return "redirect:/login";
 		}else {
 			request.getSession().setAttribute("A143", "2");
 			request.getSession().setAttribute("Message143", "Account Not Deleted Now , Try Again");
@@ -309,6 +312,9 @@ public class LoginRegister {
 	
 	@RequestMapping(value = "/uploaddata",method = RequestMethod.GET)
 	public String uploaddata(HttpServletRequest request, HttpServletResponse responce) {
+		if(request.getSession().getAttribute("email") == null) {
+			return "redirect:/login";
+		}
 		System.out.println("upload Data");
 		return "uploaddata";
 	}
@@ -340,7 +346,7 @@ public class LoginRegister {
 			session.setAttribute("A143", "2");
 			session.setAttribute("Message143", "Required file is not in excel format!");
 			session.setAttribute("alertType", "danger");
-			return "homepage";
+			return "redirect:/uploaddata";
 		}
 	}catch (Exception e) {
 			session.setAttribute("A143", "2");
@@ -348,17 +354,23 @@ public class LoginRegister {
 			session.setAttribute("alertType", "danger");
 			System.out.println("exception in DataProcessing.uploadIpldata "+e);
 	}
-		return "homepage";
+		return "redirect:/uploaddata";
 	}
 	
 	@RequestMapping(value = "/getalldata",method = {RequestMethod.GET,RequestMethod.POST})
 	public String getalldata(HttpServletRequest request, HttpServletResponse responce) {
+		if(request.getSession().getAttribute("email") == null) {
+			return "redirect:/login";
+		}
 		System.out.println("View Data");
 		return "viewdetails";
 	}
 	
 	@RequestMapping(value ="/getprofile",method = RequestMethod.GET)
 	public String getprofile(HttpServletRequest request,HttpServletResponse response , ModelMap map) {
+		if(request.getSession().getAttribute("email") == null) {
+			return "redirect:/login";
+		}
 		System.out.println("in profile");
 		UserLoginRegister user = new UserLoginRegister();
 		if(request.getSession().getAttribute("email") != null) {
@@ -373,6 +385,9 @@ public class LoginRegister {
 	}
 	@RequestMapping(value = "/cricketpage",method = RequestMethod.POST)
 	public String cricketpage(HttpServletRequest request, HttpServletResponse responce) {
+		if(request.getSession().getAttribute("email") == null) {
+			return "redirect:/login";
+		}
 		System.out.println("Data");
 		String year=request.getParameter("year");
 		IplData ipl = new IplData();

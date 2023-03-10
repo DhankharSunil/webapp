@@ -6,6 +6,7 @@
 <html>
 <head>
 <style>
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -25,34 +26,58 @@ tr:nth-child(even) {
 body {
   font-size: 28px;
 }
-
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 0;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
 }
 
 li {
-  float: left;
+	float: left;
 }
 
 li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
 }
 
-li a:hover {
-  background-color: #111;
+li a:hover:not(.active) {
+	background-color: #111;
 }
 
+.active {
+	background-color: #04AA6D;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #04AA6D;
+	min-width: 160px;
+	overflow: auto;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+.dropdown-content a {
+	color: white;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+.dropdown a:hover {
+	background-color: #ddd;
+}
+
+.show {
+	display: block;
+}
 .active {
   background-color: #4CAF50;
 }
@@ -66,6 +91,13 @@ li a:hover {
 </style>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript">
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+	document.getElementById("myDropdown").classList.toggle("show");
+}
+</script>
 </head>
 <body>
 <%! String url="/login"; %>
@@ -77,12 +109,16 @@ li a:hover {
 	%>
 	
 	<ul>
-  <li><a href="#home">Home</a></li>
-  <li><a class="active" href="#">Cricket</a></li>
-  <li><a href="#contact">Contact</a></li>
-  <li><a href="#about">About</a></li>
-  <li style="float:right"><a class="active" href="getprofile"><%= request.getSession().getAttribute("username") %></a></li>
-</ul>
+				<li><a href="#home">Home</a></li>
+				<li><a class="active" href="getalldata">Cricket</a></li>
+				<li><a href="#contact">Contact</a></li>
+				<li><a href="#about">About</a></li>
+				<li style="float: right"><a class="active"
+					onclick="myFunction()"><%=request.getSession().getAttribute("username")%></a>
+					<div id="myDropdown" class="dropdown-content">
+						<a href="getprofile">Profile</a> <a href="logout">Logout</a>
+					</div></li>
+			</ul>
 	<br/>
 	
 							<table>
