@@ -234,7 +234,7 @@ public class LoginRegister {
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("dhankharss476@gmail.com", "uamvzaluewzvguii");
+				return new PasswordAuthentication("entergmailaddress@gmail.com", "enterpassword");
 			}
 		});
 		session.setDebug(true);
